@@ -22,7 +22,7 @@ class ControllerExtensionPaymentTrayCheckout extends Controller {
 		
 		$data['action'] = $this->urlPost ();
 		$data['token_account'] = $this->config->get ( 'traycheckout_token' );
-        $data['free'] = "OPENCART_v2.2";
+        $data['free'] = "OPENCART_v2.3";
 		$data['shipping_total'] = 0;
 		$data['products'] = array ();
 		
@@ -32,7 +32,7 @@ class ControllerExtensionPaymentTrayCheckout extends Controller {
 			$option_data = array ();
 			
 			foreach ( $product ['option'] as $option ) {
-				$option_data [] = array ('name' => $option ['name'], 'value' => $option ['value'] );
+				$option_data [] = array ('name' => $option ['name'], 'shipping_price' => $option ['value'] );
 			}
 			
 			$data['products'] [] = array ('product_id' => $product ['product_id'], 
@@ -61,7 +61,7 @@ class ControllerExtensionPaymentTrayCheckout extends Controller {
 		
 		$suffix = $this->config->get ( 'traycheckout_suffix' );
 		$data['order_number'] = ($suffix != "") ? $this->session->data ['order_id'] . "_" . $suffix : $this->session->data ['order_id'];
-		
+
 		$data['url_notification'] = $this->url->link ( 'extension/payment/traycheckout/notification' );
 		$data['url_sucess'] = $this->url->link ( 'extension/payment/traycheckout/callback' );
 		$data['url_process'] = $this->url->link ( 'extension/payment/traycheckout/callback' );
@@ -75,15 +75,44 @@ class ControllerExtensionPaymentTrayCheckout extends Controller {
 		
 		$data['name'] = html_entity_decode ( $order_info [$type_address . '_firstname'] . ' ' . $order_info [$type_address . '_lastname'], ENT_QUOTES, 'UTF-8' );
 		
-		$Address = new Address ();
-		list ( $street, $number, $completion ) = $Address->getAddress ( html_entity_decode ( $order_info [$type_address . '_address_1'], ENT_QUOTES, 'UTF-8' ) );
-		$data['street'] = $street;
-		$data['number'] = $number;
-		$data['completion'] = $completion;
+		$Address = new Address();
+		list ( $street, $number, $completion ) = $Address->getAddress( html_entity_decode ( $order_info [$type_address . '_address_1'], ENT_QUOTES, 'UTF-8' ) );
+		$data['street'] = html_entity_decode ( $order_info [$type_address . '_address_1'], ENT_QUOTES, 'UTF-8' );
+
+		/*Inicio da busca dos custom fields de CPF, número e complemento */
+
+		$this->load->model('account/custom_field');
+
+		$default_group = $this->config->get('config_customer_group_id');
+		
+        if(isset($customer['customer_group_id'])){
+            $default_group = $customer['customer_group_id'];
+        }
+
+		$custom_fields = $this->model_account_custom_field->getCustomFields($default_group);
+
+        foreach($custom_fields as $custom_field){
+            if($custom_field['location'] == 'account'){
+                if(strpos(strtolower($custom_field['name']), 'cpf') !== false) {
+                    $data['cpf'] = $order_info['custom_field'][$custom_field['custom_field_id']];
+                }
+            }elseif($custom_field['location'] == 'address'){
+                if(strpos(strtolower($custom_field['name']), 'numero') !== false || strpos(strtolower($custom_field['name']), 'número') !== false){
+                    $data['number'] = $order_info['payment_custom_field'][$custom_field['custom_field_id']];
+                }elseif(strpos(strtolower($custom_field['name']), 'complemento') !== false ){
+                    $data['completion'] = $order_info['payment_custom_field'][$custom_field['custom_field_id']];
+                }
+            }
+        }
+
+		/*Fim da busca dos custom fields de CPF, número e complemento */
+
+
 		$data['neighborhood'] = html_entity_decode ( $order_info [$type_address . '_address_2'], ENT_QUOTES, 'UTF-8' );
 		$data['city'] = html_entity_decode ( $order_info [$type_address . '_city'], ENT_QUOTES, 'UTF-8' );
 		$data['postal_code'] = preg_replace ( "/[^0-9]/", '', $order_info [$type_address . '_postcode'] );
-		
+
+
 		if (isset ( $zone ['code'] )) {
 			$data['state'] = html_entity_decode ( $zone ['code'], ENT_QUOTES, 'UTF-8' );
 		}
@@ -91,6 +120,8 @@ class ControllerExtensionPaymentTrayCheckout extends Controller {
 		$data['button_confirm'] = $this->language->get('button_confirm');
 
 		$data['continue'] = $this->url->link('checkout/success');
+
+
 
 		if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/payment/traycheckout.tpl')) {
 			return $this->load->view($this->config->get('config_template') . '/payment/traycheckout.tpl', $data);
@@ -236,9 +267,9 @@ class ControllerExtensionPaymentTrayCheckout extends Controller {
 	private function urlGetByToken() {
 		
 		if (( int ) $this->config->get ( 'traycheckout_sandbox' ) == 1)
-			$url = 'https://api.sandbox.checkout.tray.com.br/api/v1/transactions/get_by_token';
+			$url = 'https://api.intermediador.sandbox.yapay.com.br/api/v1/transactions/get_by_token';
 		else
-			$url = 'https://api.checkout.tray.com.br/api/v1/transactions/get_by_token';
+			$url = 'https://api.intermediador.yapay.com.br/api/v1/transactions/get_by_token';
 		
 		return $url;
 		
@@ -247,9 +278,9 @@ class ControllerExtensionPaymentTrayCheckout extends Controller {
 	private function urlPost() {
 		
 		if (( int ) $this->config->get ( 'traycheckout_sandbox' ) == 1)
-			$url = 'https://checkout.sandbox.tray.com.br/payment/transaction';
+			$url = 'https://tc.intermediador.sandbox.yapay.com.br/payment/transaction';
 		else
-			$url = 'https://checkout.tray.com.br/payment/transaction';
+			$url = 'https://tc.intermediador.yapay.com.br/payment/transaction';
 		
 		return $url;
 		

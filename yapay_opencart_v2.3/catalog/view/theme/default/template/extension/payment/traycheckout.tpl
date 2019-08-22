@@ -4,7 +4,7 @@
 <form action="<?php echo $action; ?>" method="post" id="payment">
 	
 	<input id="token_account" name="token_account" value="<?php echo $token_account; ?>" type="hidden"/>
-	<input id="order_number" name="order_number" value="<?php echo $order_number;?>" type="hidden"/>
+	<input id="order_number" name="order_number" value="<?php echo $order_number;?>" type="hidden"/> 
 	<input id="customer[email]" name="customer[email]" value="<?php echo $email;?>" type="hidden"/>
 	<input id="customer[name]" name="customer[name]" value="<?php echo $name;?>" type="hidden"/>
 	<input id="customer[addresses][][postal_code]" name="customer[addresses][][postal_code]" value="<?php echo $postal_code;?>" type="hidden"/>
@@ -16,7 +16,8 @@
 	<input id="customer[addresses][][state]" name="customer[addresses][][state]" value="<?php echo $state;?>" type="hidden"/>
 	<input id="customer[contacts][][number_contact]" name="customer[contacts][][number_contact]" value="<?php echo $number_contact;?>" type="hidden"/>
 	<input id="customer[contacts][][type_contact]" name="customer[contacts][][type_contact]" value="<?php echo $type_contact;?>" type="hidden"/>
-        <input id="free" name="free" value="<?php echo $free; ?>" type="hidden"/>
+	<input id="customer[cpf]" name="customer[cpf]" value="<?php echo $cpf;?>" type="hidden"/>
+	<input id="free" name="free" value="<?php echo $free; ?>" type="hidden"/>
 	
 	<?php
 	foreach ($products as $product) {
