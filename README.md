@@ -1,7 +1,6 @@
 # OpenCart
 
 
-
 Para disponibilizar a Yapay como facilitador de pagamento na plataforma OpenCart, basta baixar o pacote disponível no site institucional da Yapay, extrair a pasta com o módulo e enviar para sua loja.
 
 Fique atento que sua versão de instalação OpenCart deve ser compatível com o módulo Yapay. As versões compatíveis são mostradas na pagina de download do módulo.
@@ -9,7 +8,6 @@ Fique atento que sua versão de instalação OpenCart deve ser compatível com o
 > Nosso módulo do OpenCart está disponível apenas até a versão 2.3.X
 
 > 1- Instalação do Módulo OpenCart
-
 
 Para instalar o módulo é necessário baixar o pacote através do link:
 
@@ -35,24 +33,69 @@ Segue a visualização dos diretórios da instalação OpenCart:
 
 Após a conclusão do envio do módulo Yapay, acesse a administração do Opencart e entre na seção de “Formas de Pagamento” do menu Extensões.
 
-Procurar pelo módulo “Yapay”, ele já deverá ser listado na consulta:
+Procurar pelo módulo “Yapay”, ele já deverá ser listado na consulta em Extension
 
-![OpenCart, instalação](https://intermediador.dev.yapay.com.br//images/opencart/install_opencart_3.png "OpenCart, instalação")
+![OpenCart, instalação](https://intermediador.dev.yapay.com.br//images/opencart/opencart_install(extension).png "OpenCart, instalação")
 
 Será mostrado o módulo conforme a imagem abaixo. Clicar no botão **install** ou **instalar** (caso sua loja já esteja traduzida) no lado direito da listagem:
 
-![OpenCart, instalação](https://intermediador.dev.yapay.com.br//images/opencart/install_opencart_4.png "OpenCart, instalação")
+![OpenCart, instalação](https://intermediador.dev.yapay.com.br//images/opencart/opencart_install(install2).png "OpenCart, instalação")
 
 Após a instalação, será necessário habilitar e inserir dados de cadastro de sua conta para liberar os pagamentos em sua conta Yapay.
 
-> 2- Configuração do Módulo OpenCart
+> 2- Configuração os campos necessários do Checkout do OpenCart
+
+Está disponivel na versão 2.x criar campos customizados para o checkout. Nesse caso você precisará criar o campo `CPF`, `numero` e `complemento`.
+
+Acessando o seu painel administrador do OpenCart, selecione a opção `Customer > Custom Fields`, clique para adicionar um novo campo customizável.
+
+**CPF**
+
+| Nome do Campo     |  Valor Recomendado |
+|-------------------|--------------------|
+| Custom Field Name | CPF (Obrigatório)  |
+| Location          | Account            |
+| Type              | Text               |
+| Customer Group    | Default            |
+| Required          | Default            |
+| Status            | Enabled            |
+| Sort Order        | 3                  |
+
+
+**NÚMERO**
+
+| Nome do Campo     |  Valor Recomendado   |
+|-------------------|----------------------|
+| Custom Field Name | Número (Obrigatório) |
+| Location          | Address            |
+| Type              | Text               |
+| Customer Group    | Default            |
+| Required          | Opcional           |
+| Status            | Opcional           |
+| Sort Order        | 2                  |
+
+
+**COMPLEMENTO**
+
+| Nome do Campo     |  Valor Recomendado   |
+|-------------------|----------------------|
+| Custom Field Name | Complemento          |
+| Location          | Address            |
+| Type              | Text               |
+| Customer Group    | Default            |
+| Required          | Opcional           |
+| Status            | Opcional           |
+| Sort Order        | 3                  |
+
+
+> 3- Configuração do Módulo OpenCart
 
 
 Na página de **Formas de Pagamento**, clique em **Edit (Editar)** para acessar o módulo Yapay.
 
 Será carregada a página do módulo com as opções de configuração abaixo:
 
-![OpenCart, instalação](https://intermediador.dev.yapay.com.br//images/opencart/install_opencart_5.png "OpenCart, instalação")
+![OpenCart, instalação](https://intermediador.dev.yapay.com.br//images/opencart/opencart-config.png "OpenCart, instalação")
 
 
 > Opções de configuração Yapay:
@@ -60,7 +103,7 @@ Será carregada a página do módulo com as opções de configuração abaixo:
 
 **Token:** campo obrigatório gerado no painel de administração Yapay
 
-**Sufixo para o nº do pedido:** campo opcional, utilizado para concatenar com o número do pedido da loja ao integrar com a Tray
+**Sufixo para o nº do pedido:** campo opcional, utilizado para concatenar com o número do pedido da loja ao integrar com a Yapay
 
 **Habilitar módulo Yapay:** opção para habilitar/desabilitar o módulo na loja
 
